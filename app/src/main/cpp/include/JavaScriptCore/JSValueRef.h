@@ -26,8 +26,8 @@
 #ifndef JSValueRef_h
 #define JSValueRef_h
 
-#include "JSBase.h"
-#include "WebKitAvailability.h"
+#include <JavaScriptCore/JSBase.h>
+#include <JavaScriptCore/WebKitAvailability.h>
 
 #ifndef __cplusplus
 #include <stdbool.h>

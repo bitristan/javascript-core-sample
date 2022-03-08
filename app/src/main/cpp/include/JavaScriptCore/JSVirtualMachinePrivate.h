@@ -24,7 +24,7 @@
  */
 
 #include "JSExportMacros.h"
-#include "JavaScript.h"
+#include <JavaScriptCore/JavaScript.h>
 
 #if JSC_OBJC_API_ENABLED
 

@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2013 Apple Inc. All rights reserved.
+ * Copyright (C) 2006 Apple Inc. All rights reserved.
+ * Copyright (C) 2008 Alp Toker <alp@atoker.com>
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,19 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-#ifndef JSCTestRunnerUtils_h
-#define JSCTestRunnerUtils_h
+#ifndef JavaScript_h
+#define JavaScript_h
 
-#include "JSContextRef.h"
-#include "JSValueRef.h"
+#include <JavaScriptCore/JSBase.h>
+#include <JavaScriptCore/JSContextRef.h>
+#include <JavaScriptCore/JSStringRef.h>
+#include <JavaScriptCore/JSObjectRef.h>
+#include <JavaScriptCore/JSTypedArray.h>
+#include <JavaScriptCore/JSValueRef.h>
 
-namespace JSC {
-
-JS_EXPORT_PRIVATE JSValueRef failNextNewCodeBlock(JSContextRef);
-JS_EXPORT_PRIVATE JSValueRef numberOfDFGCompiles(JSContextRef, JSValueRef theFunction);
-JS_EXPORT_PRIVATE JSValueRef setNeverInline(JSContextRef, JSValueRef theFunction);
-JS_EXPORT_PRIVATE JSValueRef setNeverOptimize(JSContextRef, JSValueRef theFunction);
-
-} // namespace JSC
-
-#endif // JSCTestRunnerUtils_h
+#endif /* JavaScript_h */

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Apple Inc. All rights reserved.
+ * Copyright (C) 2017 Apple Inc.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,26 +23,27 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-#import "JavaScriptCore.h"
-#import <JSValueInternal.h>
-#import <objc/objc-runtime.h>
+#ifndef JSWeakPrivate_h
+#define JSWeakPrivate_h
 
-#if JSC_OBJC_API_ENABLED
+#include <JavaScriptCore/JSObjectRef.h>
 
-@interface JSWrapperMap : NSObject
-
-- (instancetype)initWithGlobalContextRef:(JSGlobalContextRef)context;
-
-- (JSValue *)jsWrapperForObject:(id)object inContext:(JSContext *)context;
-
-- (JSValue *)objcWrapperForJSValueRef:(JSValueRef)value inContext:(JSContext *)context;
-
-@end
-
-id tryUnwrapObjcObject(JSGlobalContextRef, JSValueRef);
-
-bool supportsInitMethodConstructors();
-Protocol *getJSExportProtocol();
-Class getNSBlockClass();
-
+#ifdef __cplusplus
+extern "C" {
 #endif
+
+typedef const struct OpaqueJSWeak* JSWeakRef;
+
+JS_EXPORT JSWeakRef JSWeakCreate(JSContextGroupRef, JSObjectRef);
+
+JS_EXPORT void JSWeakRetain(JSContextGroupRef, JSWeakRef);
+JS_EXPORT void JSWeakRelease(JSContextGroupRef, JSWeakRef);
+
+JS_EXPORT JSObjectRef JSWeakGetObject(JSWeakRef);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // JSWeakPrivate_h
+

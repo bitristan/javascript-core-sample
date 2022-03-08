@@ -29,7 +29,7 @@
 #include "OpaqueJSString.h"
 #include "Protect.h"
 #include "Weak.h"
-#include "JSObjectRef.h"
+#include <JavaScriptCore/JSObjectRef.h>
 #include <wtf/HashMap.h>
 #include <wtf/text/WTFString.h>
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 Apple Inc.  All rights reserved.
+ * Copyright (C) 2013-2019 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,34 +23,38 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-#ifndef JSRemoteInspector_h
-#define JSRemoteInspector_h
+#import <JavaScriptCore/JavaScriptCore.h>
 
-#include "JSBase.h"
-#include "WebKitAvailability.h"
+#if JSC_OBJC_API_ENABLED
 
-#if defined(WIN32) || defined(_WIN32)
-typedef int JSProcessID;
-#else
-#include <unistd.h>
-typedef pid_t JSProcessID;
+#import <JavaScriptCore/JSContextPrivate.h>
+
+struct CallbackData {
+    CallbackData* next;
+    JSContext *context;
+    JSValue *preservedException;
+    JSValueRef calleeValue;
+    JSValueRef thisValue;
+    size_t argumentCount;
+    const JSValueRef *arguments;
+    NSArray *currentArguments;
+};
+
+@class JSWrapperMap;
+
+@interface JSContext(Internal)
+
+- (void)notifyException:(JSValueRef)exception;
+- (JSValue *)valueFromNotifyException:(JSValueRef)exception;
+- (BOOL)boolFromNotifyException:(JSValueRef)exception;
+
+- (void)beginCallbackWithData:(CallbackData *)callbackData calleeValue:(JSValueRef)calleeValue thisValue:(JSValueRef)thisValue argumentCount:(size_t)argumentCount arguments:(const JSValueRef *)arguments;
+- (void)endCallbackWithData:(CallbackData *)callbackData;
+
+- (JSWrapperMap *)wrapperMap;
+- (JSValue *)wrapperForObjCObject:(id)object;
+- (JSValue *)wrapperForJSObject:(JSValueRef)value;
+
+@end
+
 #endif
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-JS_EXPORT void JSRemoteInspectorDisableAutoStart(void) JSC_API_AVAILABLE(macos(10.11), ios(9.0));
-JS_EXPORT void JSRemoteInspectorStart(void) JSC_API_AVAILABLE(macos(10.11), ios(9.0));
-JS_EXPORT void JSRemoteInspectorSetParentProcessInformation(JSProcessID, const uint8_t* auditData, size_t auditLength) JSC_API_AVAILABLE(macos(10.11), ios(9.0));
-
-JS_EXPORT void JSRemoteInspectorSetLogToSystemConsole(bool) JSC_API_AVAILABLE(macos(10.11), ios(9.0));
-
-JS_EXPORT bool JSRemoteInspectorGetInspectionEnabledByDefault(void) JSC_API_AVAILABLE(macos(10.11), ios(9.0));
-JS_EXPORT void JSRemoteInspectorSetInspectionEnabledByDefault(bool) JSC_API_AVAILABLE(macos(10.11), ios(9.0));
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* JSRemoteInspector_h */

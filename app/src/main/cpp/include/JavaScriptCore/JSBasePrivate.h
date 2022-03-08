@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2019 Apple Inc. All rights reserved.
+ * Copyright (C) 2008 Apple Inc.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,35 +23,32 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-#ifndef JSValueInternal_h
-#define JSValueInternal_h
+#ifndef JSBasePrivate_h
+#define JSBasePrivate_h
 
-#import "JSValuePrivate.h"
+#include <JavaScriptCore/JSBase.h>
+#include <JavaScriptCore/WebKitAvailability.h>
 
-#if JSC_OBJC_API_ENABLED
-
-@interface JSValue(Internal)
-
-JSValueRef valueInternalValue(JSValue *);
-
-- (JSValue *)initWithValue:(JSValueRef)value inContext:(JSContext *)context;
-
-JSValueRef objectToValue(JSContext *, id);
-id valueToObject(JSContext *, JSValueRef);
-id valueToNumber(JSGlobalContextRef, JSValueRef, JSValueRef* exception);
-id valueToString(JSGlobalContextRef, JSValueRef, JSValueRef* exception);
-id valueToDate(JSGlobalContextRef, JSValueRef, JSValueRef* exception);
-id valueToArray(JSGlobalContextRef, JSValueRef, JSValueRef* exception);
-id valueToDictionary(JSGlobalContextRef, JSValueRef, JSValueRef* exception);
-
-+ (SEL)selectorForStructToValue:(const char *)structTag;
-+ (SEL)selectorForValueToStruct:(const char *)structTag;
-
-@end
-
-NSInvocation *typeToValueInvocationFor(const char* encodedType);
-NSInvocation *valueToTypeInvocationFor(const char* encodedType);
-
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-#endif // JSValueInternal_h
+/*!
+@function
+@abstract Reports an object's non-GC memory payload to the garbage collector.
+@param ctx The execution context to use.
+@param size The payload's size, in bytes.
+@discussion Use this function to notify the garbage collector that a GC object
+owns a large non-GC memory region. Calling this function will encourage the
+garbage collector to collect soon, hoping to reclaim that large non-GC memory
+region.
+*/
+JS_EXPORT void JSReportExtraMemoryCost(JSContextRef ctx, size_t size) JSC_API_AVAILABLE(macos(10.6), ios(7.0));
+
+JS_EXPORT void JSDisableGCTimer(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* JSBasePrivate_h */

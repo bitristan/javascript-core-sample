@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013-2019 Apple Inc. All rights reserved.
+ * Copyright (C) 2019 Apple Inc.  All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,38 +23,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-#import "JavaScriptCore.h"
+#pragma once
 
-#if JSC_OBJC_API_ENABLED
+#include <JavaScriptCore/JSBase.h>
+#include <JavaScriptCore/WebKitAvailability.h>
 
-#import <JavaScriptCore/JSContextPrivate.h>
+namespace JSC {
+class JSLockHolder;
+class ExecState;
+class SourceCode;
+}
 
-struct CallbackData {
-    CallbackData* next;
-    JSContext *context;
-    JSValue *preservedException;
-    JSValueRef calleeValue;
-    JSValueRef thisValue;
-    size_t argumentCount;
-    const JSValueRef *arguments;
-    NSArray *currentArguments;
-};
-
-@class JSWrapperMap;
-
-@interface JSContext(Internal)
-
-- (void)notifyException:(JSValueRef)exception;
-- (JSValue *)valueFromNotifyException:(JSValueRef)exception;
-- (BOOL)boolFromNotifyException:(JSValueRef)exception;
-
-- (void)beginCallbackWithData:(CallbackData *)callbackData calleeValue:(JSValueRef)calleeValue thisValue:(JSValueRef)thisValue argumentCount:(size_t)argumentCount arguments:(const JSValueRef *)arguments;
-- (void)endCallbackWithData:(CallbackData *)callbackData;
-
-- (JSWrapperMap *)wrapperMap;
-- (JSValue *)wrapperForObjCObject:(id)object;
-- (JSValue *)wrapperForJSObject:(JSValueRef)value;
-
-@end
-
-#endif
+extern "C" JSValueRef JSEvaluateScriptInternal(const JSC::JSLockHolder&, JSC::ExecState*, JSContextRef, JSObjectRef thisObject, const JSC::SourceCode&, JSValueRef* exception);

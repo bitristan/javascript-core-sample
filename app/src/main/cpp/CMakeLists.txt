@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.10.2)
 
 project("sample")
 
-include_directories(${CMAKE_SOURCE_DIR}/JavaScriptCore)
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
 message(DEBUG "***** CURRENT_DIR:" ${CMAKE_SOURCE_DIR})
 message(DEBUG "***** CURRENT_ABI:" ${ANDROID_ABI})

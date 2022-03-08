@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Apple Inc.  All rights reserved.
+ * Copyright (C) 2013 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -20,27 +20,22 @@
  * PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
  * OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef JSHeapFinalizerPrivate_h
-#define JSHeapFinalizerPrivate_h
+#ifndef JSStringRefPrivate_h
+#define JSStringRefPrivate_h
 
-#include "JSContextRef.h"
-#include <stdbool.h>
+#include <JavaScriptCore/JSStringRef.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef void (*JSHeapFinalizer)(JSContextGroupRef, void *userData);
-
-JS_EXPORT void JSContextGroupAddHeapFinalizer(JSContextGroupRef, JSHeapFinalizer, void *userData);
-JS_EXPORT void JSContextGroupRemoveHeapFinalizer(JSContextGroupRef, JSHeapFinalizer, void *userData);
+JS_EXPORT JSStringRef JSStringCreateWithCharactersNoCopy(const JSChar* chars, size_t numChars);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif // JSHeapFinalizerPrivate_h
-
+#endif /* JSStringRefPrivate_h */

@@ -26,7 +26,7 @@
 #ifndef JSStringRef_h
 #define JSStringRef_h
 
-#include "JSValueRef.h"
+#include <JavaScriptCore/JSValueRef.h>
 
 #ifndef __cplusplus
 #include <stdbool.h>

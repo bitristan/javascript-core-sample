@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017 Apple Inc.  All rights reserved.
+ * Copyright (C) 2013 Apple Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -23,27 +23,19 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
  */
 
-#ifndef JSWeakPrivate_h
-#define JSWeakPrivate_h
+#ifndef JSCTestRunnerUtils_h
+#define JSCTestRunnerUtils_h
 
-#include "JSObjectRef.h"
+#include <JavaScriptCore/JSContextRef.h>
+#include <JavaScriptCore/JSValueRef.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace JSC {
 
-typedef const struct OpaqueJSWeak* JSWeakRef;
+JS_EXPORT_PRIVATE JSValueRef failNextNewCodeBlock(JSContextRef);
+JS_EXPORT_PRIVATE JSValueRef numberOfDFGCompiles(JSContextRef, JSValueRef theFunction);
+JS_EXPORT_PRIVATE JSValueRef setNeverInline(JSContextRef, JSValueRef theFunction);
+JS_EXPORT_PRIVATE JSValueRef setNeverOptimize(JSContextRef, JSValueRef theFunction);
 
-JS_EXPORT JSWeakRef JSWeakCreate(JSContextGroupRef, JSObjectRef);
+} // namespace JSC
 
-JS_EXPORT void JSWeakRetain(JSContextGroupRef, JSWeakRef);
-JS_EXPORT void JSWeakRelease(JSContextGroupRef, JSWeakRef);
-
-JS_EXPORT JSObjectRef JSWeakGetObject(JSWeakRef);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif // JSWeakPrivate_h
-
+#endif // JSCTestRunnerUtils_h
