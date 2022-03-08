@@ -1,13 +1,25 @@
 # For more information about using CMake with Android Studio, read the
 # documentation: https://d.android.com/studio/projects/add-native-code.html
 
-# Sets the minimum version of CMake required to build the native library.
-
 cmake_minimum_required(VERSION 3.10.2)
 
-# Declares and names the project.
-
 project("sample")
+
+include_directories(${CMAKE_SOURCE_DIR}/JavaScriptCore)
+
+message(DEBUG "***** CURRENT_DIR:" ${CMAKE_SOURCE_DIR})
+message(DEBUG "***** CURRENT_ABI:" ${ANDROID_ABI})
+
+add_library(jsc SHARED IMPORTED)
+set_target_properties( # Specifies the target library.
+        jsc PROPERTIES
+        IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}/libjsc.so")
+
+#add_library(jsc SHARED IMPORTED)
+#set_target_properties(
+#        jsc
+#        PROPERTIES IMPORTED_LOCATION
+#        ${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/${ANDROID_ABI}/libjsc.so)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -16,10 +28,8 @@ project("sample")
 
 add_library( # Sets the name of the library.
         sample
-
         # Sets the library as a shared library.
         SHARED
-
         # Provides a relative path to your source file(s).
         native-lib.cpp)
 
@@ -31,7 +41,6 @@ add_library( # Sets the name of the library.
 
 find_library( # Sets the name of the path variable.
         log-lib
-
         # Specifies the name of the NDK library that
         # you want CMake to locate.
         log)
@@ -42,7 +51,7 @@ find_library( # Sets the name of the path variable.
 
 target_link_libraries( # Specifies the target library.
         sample
-
+        jsc
         # Links the target library to the log library
         # included in the NDK.
         ${log-lib})
