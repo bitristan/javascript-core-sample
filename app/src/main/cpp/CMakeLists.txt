@@ -7,19 +7,12 @@ project("sample")
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-message(DEBUG "***** CURRENT_DIR:" ${CMAKE_SOURCE_DIR})
-message(DEBUG "***** CURRENT_ABI:" ${ANDROID_ABI})
-
 add_library(jsc SHARED IMPORTED)
-set_target_properties( # Specifies the target library.
-        jsc PROPERTIES
-        IMPORTED_LOCATION "${CMAKE_SOURCE_DIR}/../jniLibs/${ANDROID_ABI}/libjsc.so")
-
-#add_library(jsc SHARED IMPORTED)
-#set_target_properties(
-#        jsc
-#        PROPERTIES IMPORTED_LOCATION
-#        ${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/${ANDROID_ABI}/libjsc.so)
+set_target_properties(
+        jsc
+        PROPERTIES
+        IMPORTED_LOCATION
+        ${CMAKE_CURRENT_SOURCE_DIR}/../../../libs/${ANDROID_ABI}/libjsc.so)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.

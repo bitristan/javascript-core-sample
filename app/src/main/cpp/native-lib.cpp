@@ -1,7 +1,7 @@
 #include <jni.h>
 #include <string>
 
-#include "JavaScriptCore/JavaScript.h"
+#include <JavaScriptCore/JavaScript.h>
 
 std::string JSStringToStdString(JSStringRef jsString) {
     size_t maxBufferSize = JSStringGetMaximumUTF8CStringSize(jsString);
