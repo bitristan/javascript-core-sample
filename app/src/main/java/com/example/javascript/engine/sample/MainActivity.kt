@@ -2,26 +2,43 @@ package com.example.javascript.engine.sample
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.TextView
+import android.util.Log
+import android.view.View
 
 class MainActivity : AppCompatActivity() {
+  private var loaded = false
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
+    JniUtil.createEngine()
 
-    // Example of a call to a native method
-    findViewById<TextView>(R.id.sample_text).text = stringFromJNI()
+    findViewById<View>(R.id.loadScript).setOnClickListener {
+      if (!loaded) {
+        loaded = true
+        JniUtil.loadScript(String(assets.open("app.js").readBytes()))
+      }
+    }
+    findViewById<View>(R.id.callJsFunctionSync).setOnClickListener {
+      val result = JniUtil.callJsFunctionSync()
+      Log.d(TAG, "result: $result")
+    }
+    findViewById<View>(R.id.callJsFunction).setOnClickListener {
+      JniUtil.callJsFunction(object : JSCallback() {
+        override fun invoke(`object`: Any?) {
+          Log.d(TAG, "js callback")
+        }
+      })
+    }
   }
 
-  /**
-   * A native method that is implemented by the 'sample' native library,
-   * which is packaged with this application.
-   */
-  external fun stringFromJNI(): String
+  override fun onDestroy() {
+    super.onDestroy()
+    JniUtil.destroyEngine()
+  }
 
   companion object {
-    // Used to load the 'sample' library on application startup.
+    private const val TAG = "MainActivity"
     init {
       System.loadLibrary("sample")
     }
