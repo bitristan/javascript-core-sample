@@ -56,6 +56,9 @@ Java_com_example_javascript_engine_sample_JniUtil_loadScript(
     }
 }
 
+jobject _callback;
+JNIEnv* _env;
+
 extern "C"
 JNIEXPORT jobject JNICALL
 Java_com_example_javascript_engine_sample_JniUtil_callJsFunctionSync(
@@ -82,9 +85,98 @@ Java_com_example_javascript_engine_sample_JniUtil_callJsFunctionSync(
     return jString;
 }
 
+class HostFunctionMetadata {
+public:
+    static void initialize(JSContextRef ctx, JSObjectRef object) {
+        logd("initialize called");
+    }
+
+    static JSValueRef call(
+            JSContextRef ctx,
+            JSObjectRef function,
+            JSObjectRef thisObject,
+            size_t argumentCount,
+            const JSValueRef arguments[],
+            JSValueRef* exception) {
+        logd("function called, argument count %d", argumentCount);
+
+        JSStringRef jsStringRef = JSValueToStringCopy(_ctx, arguments[0], NULL);
+        char* params = JSStringToCString(jsStringRef);
+
+        jclass clazz = _env->FindClass("com/example/javascript/engine/sample/JSCallback");
+        jmethodID methodId = _env->GetMethodID(clazz, "onResult", "(Ljava/lang/Object;)V");
+        _env->CallVoidMethod(_callback, methodId, _env->NewStringUTF(params));
+
+        return JSValueMakeUndefined(ctx);
+    }
+
+    static void finalize(JSObjectRef object) {
+        logd("finalized called");
+    }
+
+    static JSObjectRef callAsConstructor(
+            JSContextRef ctx,
+            JSObjectRef constructor,
+            size_t argumentCount,
+            const JSValueRef arguments[],
+            JSValueRef* exception
+    ) {
+        logd("callAsConstructor called");
+        return JSValueToObject(_ctx, JSValueMakeUndefined(_ctx), NULL);
+    }
+};
+
+JSValueRef call(
+        JSContextRef ctx,
+        JSObjectRef function,
+        JSObjectRef thisObject,
+        size_t argumentCount,
+        const JSValueRef arguments[],
+        JSValueRef* exception) {
+
+    jclass clazz = _env->FindClass("com/example/javascript/engine/sample/JSCallback");
+    jmethodID methodId = _env->GetMethodID(clazz, "invoke", "(Ljava/lang/Object;)V");
+
+
+//    JSValueRef a = arguments[0];
+//    JSType type = JSValueGetType(_ctx, a);
+    logd("type is %d", argumentCount);
+//    JSStringRef jsStringRef = JSValueToStringCopy(_ctx, arguments[0], NULL);
+//    char* params = JSStringToCString(jsStringRef);
+//    logd("argument length: %s", params);
+
+    return JSValueMakeUndefined(ctx);
+}
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_javascript_engine_sample_JniUtil_callJsFunction(JNIEnv *env, jobject thiz,
         jobject callback) {
-    logd("call js function with callback");
+    _env = env;
+    _callback = callback;
+
+    // 从Context中获取函数对象
+    JSStringRef funcName = JSStringCreateWithUTF8CString("welcomeWithCallback");
+    JSObjectRef globalObj = JSContextGetGlobalObject(_ctx);
+    JSValueRef func = JSObjectGetProperty(_ctx, globalObj, funcName, NULL);
+    JSStringRelease(funcName);
+
+    // 转换为函数对象
+    JSObjectRef funcObject = JSValueToObject(_ctx, func, NULL);
+
+    // 注入回调函数
+    JSClassDefinition functionClass = kJSClassDefinitionEmpty;
+    functionClass.version = 0;
+    functionClass.attributes = kJSClassAttributeNoAutomaticPrototype;
+    functionClass.callAsFunction = HostFunctionMetadata::call;
+
+    JSClassRef hostFunctionClass = JSClassCreate(&functionClass);
+
+    HostFunctionMetadata metadata;
+    JSObjectRef funcRef = JSObjectMake(_ctx, hostFunctionClass, &metadata);
+
+    // 调用函数
+    JSValueRef args[1];
+    args[0] = funcRef;
+    JSObjectCallAsFunction(_ctx, funcObject, NULL, 1, args, NULL);
 }

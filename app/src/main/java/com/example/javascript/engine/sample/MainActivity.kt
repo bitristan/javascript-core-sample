@@ -25,8 +25,8 @@ class MainActivity : AppCompatActivity() {
     }
     findViewById<View>(R.id.callJsFunction).setOnClickListener {
       JniUtil.callJsFunction(object : JSCallback() {
-        override fun invoke(`object`: Any?) {
-          Log.d(TAG, "js callback")
+        override fun onResult(hello: Any?) {
+          Log.d(TAG, "js callback $hello")
         }
       })
     }
