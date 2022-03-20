@@ -25,10 +25,14 @@ class MainActivity : AppCompatActivity() {
     }
     findViewById<View>(R.id.callJsFunction).setOnClickListener {
       JniUtil.callJsFunction(object : JSCallback() {
-        override fun onResult(hello: Any?) {
-          Log.d(TAG, "js callback $hello")
+        override fun onResult(`object`: Any?) {
+          Log.d(TAG, "js callback $`object`")
         }
       })
+    }
+    findViewById<View>(R.id.callNativeModule).setOnClickListener {
+      val result = JniUtil.callNativeModule()
+      Log.d(TAG, "result: $result")
     }
   }
 

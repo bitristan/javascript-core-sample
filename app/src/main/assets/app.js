@@ -10,4 +10,8 @@ function add(a, b) {
   return a + b;
 }
 
+function callNativeModule() {
+    return getSystemInfo();
+}
+
 add(2, 3);
